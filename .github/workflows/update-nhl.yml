@@ -27,12 +27,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      
-      - name: Restore historical NHL winners
+
+
+      - name: Restore historical NHL winners and predictions
         run: |
           mkdir -p data predictions
           cp reference_data/nhl_tied_game_winners.csv data/nhl_tied_game_winners.csv
           cp dashboard_data/predictions.csv predictions/predictions.csv
+          if [ -f dashboard_data/verified_live_results.csv ]; then
+            cp dashboard_data/verified_live_results.csv predictions/verified_live_results.csv
+          fi
+
 
 
       - name: Download latest MoneyPuck data
@@ -44,16 +49,27 @@ jobs:
       - name: Generate NHL predictions
         run: python src/predict_upcoming.py
 
+      - name: Track completed NHL games
+        run: python src/track_predictions.py
+
+
       - name: Update published dashboard data
         run: |
           cp data/nhl_tied_game_winners.csv reference_data/nhl_tied_game_winners.csv
           cp predictions/predictions.csv dashboard_data/predictions.csv
+          if [ -f predictions/verified_live_results.csv ]; then
+            cp predictions/verified_live_results.csv dashboard_data/verified_live_results.csv
+          fi
+          if [ -f predictions/verified_live_metrics.csv ]; then
+            cp predictions/verified_live_metrics.csv dashboard_data/verified_live_metrics.csv
+          fi
+
 
       - name: Commit updated data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add dashboard_data/predictions.csv reference_data/nhl_tied_game_winners.csv
+          git add dashboard_data/ reference_data/nhl_tied_game_winners.csv
           if ! git diff --cached --quiet; then
             git commit -m "Update NHL predictions"
             git push
