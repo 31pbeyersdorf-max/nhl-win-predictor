@@ -25,12 +25,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      
       - name: Restore historical NHL winners
         run: |
           mkdir -p data predictions
-          cp reference_data/nhl_tied_game_winners.csv 
-          data/nhl_tied_game_winners.csv
+          cp reference_data/nhl_tied_game_winners.csv data/nhl_tied_game_winners.csv
           cp dashboard_data/predictions.csv predictions/predictions.csv
+
 
       - name: Download latest MoneyPuck data
         run: python src/update_data.py
