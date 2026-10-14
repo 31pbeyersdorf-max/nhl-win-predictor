@@ -198,3 +198,9 @@ The dashboard displays available predictions, historical performance, sportsbook
 ## Disclaimer
 
 This project is for educational, statistical research, and portfolio demonstration purposes. Theoretical expected values and paper returns are not evidence of guaranteed profits or recommendations to place wagers.
+
+**[🚀 Launch the Interactive NHL Dashboard](https://nhl-win-predictor-zhffr3hfvf4cafwnhdpntq.streamlit.app/)**
+
+Explore NHL win probabilities, historical model performance, sportsbook comparisons, and probability calibration.
+
+*The public dashboard displays dated data snapshots rather than continuously updated live predictions.*
