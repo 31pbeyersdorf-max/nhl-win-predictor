@@ -56,6 +56,7 @@ def main():
         if TEMP_FILE.exists():
             TEMP_FILE.unlink()
         print("Check your existing data before continuing.")
+        raise
 
 
 if __name__ == "__main__":

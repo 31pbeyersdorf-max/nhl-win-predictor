@@ -1,0 +1,57 @@
+
+name: Update NHL Predictions
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-predictions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore historical NHL winners
+        run: |
+          mkdir -p data predictions
+          cp reference_data/nhl_tied_game_winners.csv 
+          data/nhl_tied_game_winners.csv
+          cp dashboard_data/predictions.csv predictions/predictions.csv
+
+      - name: Download latest MoneyPuck data
+        run: python src/update_data.py
+
+      - name: Update official NHL winners
+        run: python src/fetch_nhl_winners.py
+
+      - name: Generate NHL predictions
+        run: python src/predict_upcoming.py
+
+      - name: Update published dashboard data
+        run: |
+          cp data/nhl_tied_game_winners.csv reference_data/nhl_tied_game_winners.csv
+          cp predictions/predictions.csv dashboard_data/predictions.csv
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dashboard_data/predictions.csv reference_data/nhl_tied_game_winners.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Update NHL predictions"
+            git push
+          fi
