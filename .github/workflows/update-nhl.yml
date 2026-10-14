@@ -63,6 +63,7 @@ jobs:
           if [ -f predictions/verified_live_metrics.csv ]; then
             cp predictions/verified_live_metrics.csv dashboard_data/verified_live_metrics.csv
           fi
+                    date -u +"%Y-%m-%d %H:%M:%S" > dashboard_data/last_updated.txt
 
 
       - name: Commit updated data
