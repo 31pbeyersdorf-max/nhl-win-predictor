@@ -1,5 +1,25 @@
+
+# Secrets
+.env
+.env.*
+
+# Python environments
 venv/
-data/
-.ipynb_checkpoints/
-.DS_Store
+.venv/
+.venv313/
+
+# Python cache
 __pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+
+# Local datasets and downloaded odds
+data/
+
+# Generated predictions and evaluation outputs
+predictions/*.csv
