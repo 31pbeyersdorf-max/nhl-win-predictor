@@ -50,8 +50,25 @@ df = (
 
 st.sidebar.header("Filters")
 
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 dates = sorted(df["game_date"].dt.date.unique())
-selected_date = st.sidebar.selectbox("Select game date", dates)
+
+today = datetime.now(ZoneInfo("America/New_York")).date()
+
+upcoming_dates = [date for date in dates if date >= today]
+
+if upcoming_dates:
+    default_date = upcoming_dates[0]
+else:
+    default_date = dates[-1]
+
+selected_date = st.sidebar.selectbox(
+    "Select game date",
+    dates,
+    index=dates.index(default_date)
+)
 
 games = df[df["game_date"].dt.date == selected_date]
 
