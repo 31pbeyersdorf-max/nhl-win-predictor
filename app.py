@@ -3,6 +3,18 @@ import pandas as pd
 import streamlit as st
 from pathlib import Path
 
+DATA_DIR = Path("dashboard_data")
+
+
+def get_last_updated():
+    timestamp_file = DATA_DIR / "last_updated.txt"
+
+    if timestamp_file.exists():
+        return timestamp_file.read_text().strip()
+
+    return "Not available"
+
+
 st.set_page_config(
     page_title="NHL Predictive Analytics",
     page_icon="🏒",
@@ -12,7 +24,13 @@ st.set_page_config(
 st.title("🏒 NHL Predictive Analytics")
 st.caption("Machine learning predictions powered by Python")
 
-DATA_DIR = Path("dashboard_data")
+st.info(
+    "NHL predictions are refreshed daily through GitHub Actions. "
+    "Verified live performance updates as completed games become available. "
+    "Historical backtest metrics and sportsbook odds are separate snapshots."
+)
+
+st.caption(f"🕒 Predictions last updated (UTC): {get_last_updated()}")
 
 df = pd.read_csv(DATA_DIR / "predictions.csv")
 
