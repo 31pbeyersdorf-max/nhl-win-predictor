@@ -37,6 +37,9 @@ jobs:
           if [ -f dashboard_data/verified_live_results.csv ]; then
             cp dashboard_data/verified_live_results.csv predictions/verified_live_results.csv
           fi
+                    if [ -f dashboard_data/market_odds.csv ]; then
+            cp dashboard_data/market_odds.csv data/market_odds.csv
+          fi
 
 
 
@@ -51,6 +54,17 @@ jobs:
 
       - name: Track completed NHL games
         run: python src/track_predictions.py
+      
+      - name: Fetch latest sportsbook odds
+        id: fetch_odds
+        continue-on-error: true
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python src/fetch_market_odds.py
+
+      - name: Compare model predictions with sportsbook odds
+        if: steps.fetch_odds.outcome == 'success'
+        run: python src/compare_market.py
 
 
       - name: Update published dashboard data
@@ -63,7 +77,13 @@ jobs:
           if [ -f predictions/verified_live_metrics.csv ]; then
             cp predictions/verified_live_metrics.csv dashboard_data/verified_live_metrics.csv
           fi
-                    date -u +"%Y-%m-%d %H:%M:%S" > dashboard_data/last_updated.txt
+                    if [ -f data/market_odds.csv ]; then
+            cp data/market_odds.csv dashboard_data/market_odds.csv
+          fi
+          if [ -f predictions/market_comparison.csv ]; then
+            cp predictions/market_comparison.csv dashboard_data/market_comparison.csv
+          fi
+          date -u +"%Y-%m-%d %H:%M:%S" > dashboard_data/last_updated.txt
 
 
       - name: Commit updated data
