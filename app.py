@@ -1,6 +1,7 @@
 
 import pandas as pd
 import streamlit as st
+from pathlib import Path
 
 st.set_page_config(
     page_title="NHL Predictive Analytics",
@@ -11,7 +12,10 @@ st.set_page_config(
 st.title("🏒 NHL Predictive Analytics")
 st.caption("Machine learning predictions powered by Python")
 
-df = pd.read_csv("predictions/predictions.csv")
+DATA_DIR = Path("dashboard_data")
+
+df = pd.read_csv(DATA_DIR / "predictions.csv")
+
 
 # Keep only rows containing the new score predictions
 df = df.dropna(
@@ -96,7 +100,7 @@ st.divider()
 st.header("📊 Historical Model Performance")
 
 try:
-    metrics = pd.read_csv("predictions/backtest_metrics.csv")
+    metrics = pd.read_csv(DATA_DIR / "backtest_metrics.csv")
 
     overall = metrics[
         metrics["season"].astype(str) == "All test seasons"
@@ -168,8 +172,8 @@ from pathlib import Path
 st.divider()
 st.header("Live Prediction Tracking")
 
-metrics_file = Path("predictions/verified_live_metrics.csv")
-results_file = Path("predictions/verified_live_results.csv")
+metrics_file = DATA_DIR / "verified_live_metrics.csv"
+results_file = DATA_DIR / "verified_live_metrics.csv"
 
 if metrics_file.exists():
     metrics = pd.read_csv(metrics_file).iloc[0]
@@ -210,7 +214,7 @@ if results_file.exists():
 st.divider()
 st.header("💰 Model vs. Sportsbook Market")
 
-market_file = Path("predictions/market_comparison.csv")
+market_file = DATA_DIR / "market_comparison.csv"
 
 if market_file.exists():
     market = pd.read_csv(market_file)
@@ -359,8 +363,8 @@ else:
 st.divider()
 st.header("🎯 Model Probability Calibration")
 
-calibration_file = Path("predictions/calibration_results.csv")
-summary_file = Path("predictions/calibration_summary.csv")
+calibration_file = DATA_DIR / "calibration_results.csv"
+summary_file = DATA_DIR / "calibration_summary.csv"
 
 if calibration_file.exists() and summary_file.exists():
     calibration = pd.read_csv(calibration_file)
