@@ -4,7 +4,7 @@ name: Update NHL Predictions
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 14 * * *"
+    - cron: "17 14 * * *"
 
 permissions:
   contents: write
